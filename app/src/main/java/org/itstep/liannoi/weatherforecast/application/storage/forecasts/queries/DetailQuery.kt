@@ -1,12 +1,18 @@
 package org.itstep.liannoi.weatherforecast.application.storage.forecasts.queries
 
+import org.itstep.liannoi.weatherforecast.application.ApplicationDefaults
+import org.itstep.liannoi.weatherforecast.application.common.exceptions.DetailForecastException
 import org.itstep.liannoi.weatherforecast.application.storage.forecasts.models.ForecastModel
 
-data class DetailQuery(val city: String, val appId: String, val units: String) {
+class DetailQuery(val city: String, val appId: String, val units: String) {
+    constructor(city: String) : this(
+        city,
+        ApplicationDefaults.API_APP_ID,
+        ApplicationDefaults.API_UNITS_METRIC
+    )
+
     interface Handler {
         fun onSuccess(forecast: ForecastModel)
-
-        // TODO: Replace with custom specific Exception.
-        fun onError(e: Exception)
+        fun onError(exception: DetailForecastException)
     }
 }
