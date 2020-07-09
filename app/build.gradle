@@ -30,13 +30,32 @@ android {
 }
 
 dependencies {
+    implementation 'com.trello.rxlifecycle4:rxlifecycle:4.0.0'
+
+    // If you want to bind to Android-specific lifecycles
+    implementation 'com.trello.rxlifecycle4:rxlifecycle-android:4.0.0'
+
+    // If you want pre-written Activities and Fragments you can subclass as providers
+    implementation 'com.trello.rxlifecycle4:rxlifecycle-components:4.0.0'
+
+    // If you want pre-written support preference Fragments you can subclass as providers
+    implementation 'com.trello.rxlifecycle4:rxlifecycle-components-preference:4.0.0'
+
+    // If you want to use Android Lifecycle for providers
+    implementation 'com.trello.rxlifecycle4:rxlifecycle-android-lifecycle:4.0.0'
+
+    // If you want to use Kotlin syntax
+    implementation 'com.trello.rxlifecycle4:rxlifecycle-kotlin:4.0.0'
+
+    // If you want to use Kotlin syntax with Android Lifecycle
+    implementation 'com.trello.rxlifecycle4:rxlifecycle-android-lifecycle-kotlin:4.0.0'
+
     implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'com.jakewharton.rxbinding4:rxbinding:4.0.0'
     implementation 'com.jakewharton.rxbinding4:rxbinding-core:4.0.0'
     implementation 'com.jakewharton.rxbinding4:rxbinding-appcompat:4.0.0'
     implementation 'com.jakewharton.rxbinding4:rxbinding-drawerlayout:4.0.0'
-    implementation 'com.jakewharton.rxbinding4:rxbinding-leanback:4.0.0'
     implementation 'com.jakewharton.rxbinding4:rxbinding-recyclerview:4.0.0'
     implementation 'com.jakewharton.rxbinding4:rxbinding-slidingpanelayout:4.0.0'
     implementation 'com.jakewharton.rxbinding4:rxbinding-swiperefreshlayout:4.0.0'
