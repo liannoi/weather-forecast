@@ -1,5 +1,6 @@
 package org.itstep.liannoi.weatherforecast.presentation.forecasts
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -27,6 +28,13 @@ class MainActivity : AppCompatActivity(), DetailQuery.Handler {
             .filter { it.isNotEmpty() }
             .bindToLifecycle(this)
             .subscribe { repository?.getCurrent(DetailQuery(it), this) }
+
+        listForecastsButton.clicks()
+            .bindToLifecycle(this)
+            .subscribe {
+                val intent = Intent(this, ForecastsListActivity::class.java)
+                startActivity(intent)
+            }
     }
 
     ///////////////////////////////////////////////////////////////////////////
