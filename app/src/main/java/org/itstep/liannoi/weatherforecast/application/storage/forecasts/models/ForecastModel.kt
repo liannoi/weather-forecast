@@ -16,4 +16,11 @@ data class ForecastModel(
     @SerializedName("id") val id: Int,
     @SerializedName("name") val name: String,
     @SerializedName("cod") val cod: Int
-)
+) {
+    val iconPath: String
+        get() = "https://openweathermap.org/img/wn/${this.weather[0].icon}@4x.png"
+
+    fun toShortString(): String {
+        return "${this.name} (${this.main.temp.toInt()} °C)"
+    }
+}

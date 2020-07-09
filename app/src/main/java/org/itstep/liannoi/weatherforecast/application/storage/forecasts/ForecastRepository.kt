@@ -1,16 +1,18 @@
 package org.itstep.liannoi.weatherforecast.application.storage.forecasts
 
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.itstep.liannoi.weatherforecast.application.ApplicationDefaults
 import org.itstep.liannoi.weatherforecast.application.common.exceptions.DetailForecastException
-import org.itstep.liannoi.weatherforecast.application.common.storage.AbstractRepository
 import org.itstep.liannoi.weatherforecast.application.storage.forecasts.queries.DetailQuery
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ForecastRepository private constructor() : AbstractRepository() {
+class ForecastRepository private constructor() {
+    private val composite: CompositeDisposable = CompositeDisposable()
     private val forecastService: ForecastService
 
     init {
@@ -23,13 +25,33 @@ class ForecastRepository private constructor() : AbstractRepository() {
         forecastService = retrofit.create(ForecastService::class.java)
     }
 
-    fun current(query: DetailQuery, handler: DetailQuery.Handler) {
+    fun getCurrent(query: DetailQuery, handler: DetailQuery.Handler) {
         forecastService.getCurrent(query.city, query.appId, query.units)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ handler.onSuccess(it) }, { handler.onError(DetailForecastException()) })
             .follow()
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Dispose
+    ///////////////////////////////////////////////////////////////////////////
+
+    fun stop() {
+        composite.clear()
+    }
+
+    fun destroy() {
+        composite.dispose()
+    }
+
+    private fun Disposable.follow() {
+        composite.add(this)
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Companion
+    ///////////////////////////////////////////////////////////////////////////
 
     companion object {
         private var instance: ForecastRepository? = null
