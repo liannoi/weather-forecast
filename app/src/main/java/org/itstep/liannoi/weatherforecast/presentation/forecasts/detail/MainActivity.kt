@@ -1,4 +1,4 @@
-package org.itstep.liannoi.weatherforecast.presentation.forecasts
+package org.itstep.liannoi.weatherforecast.presentation.forecasts.detail
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,15 +7,16 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.jakewharton.rxbinding4.view.clicks
 import com.squareup.picasso.Picasso
-import com.trello.rxlifecycle4.android.lifecycle.kotlin.bindToLifecycle
 import kotlinx.android.synthetic.main.activity_main.*
 import org.itstep.liannoi.weatherforecast.R
+import org.itstep.liannoi.weatherforecast.application.ApplicationDefaults
 import org.itstep.liannoi.weatherforecast.application.common.exceptions.DetailForecastException
 import org.itstep.liannoi.weatherforecast.application.storage.forecasts.ForecastRepository
-import org.itstep.liannoi.weatherforecast.application.storage.forecasts.models.ForecastModel
-import org.itstep.liannoi.weatherforecast.application.storage.forecasts.queries.DetailQuery
+import org.itstep.liannoi.weatherforecast.application.storage.forecasts.queries.current.CurrentQuery
+import org.itstep.liannoi.weatherforecast.application.storage.forecasts.queries.current.models.CurrentForecastModel
+import org.itstep.liannoi.weatherforecast.presentation.forecasts.list.ForecastsListActivity
 
-class MainActivity : AppCompatActivity(), DetailQuery.Handler {
+class MainActivity : AppCompatActivity(), CurrentQuery.Handler {
     private val repository: ForecastRepository?
         get() = ForecastRepository.getInstance()
 
@@ -26,22 +27,36 @@ class MainActivity : AppCompatActivity(), DetailQuery.Handler {
         currentForecastButton.clicks()
             .map { cityInput.text.toString() }
             .filter { it.isNotEmpty() }
-            .bindToLifecycle(this)
-            .subscribe { repository?.getCurrent(DetailQuery(it), this) }
+            .subscribe { updateCurrentForecast(it) }
 
         listForecastsButton.clicks()
-            .bindToLifecycle(this)
-            .subscribe {
-                val intent = Intent(this, ForecastsListActivity::class.java)
-                startActivity(intent)
-            }
+            .map { cityInput.text.toString() }
+            .filter { it.isNotEmpty() }
+            .subscribe { showFiveDaysActivity(it) }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Helpers
+    ///////////////////////////////////////////////////////////////////////////
+
+    private fun updateCurrentForecast(it: String) {
+        repository?.getCurrent(CurrentQuery(it), this)
+    }
+
+    private fun showFiveDaysActivity(city: String) {
+        val intent = Intent(this, ForecastsListActivity::class.java).apply {
+            putExtra(ApplicationDefaults.EXTRA_FORECASTS_FIVE_DAYS, city)
+        }
+
+        startActivity(intent)
+        finish()
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Forecasts - DetailQuery
     ///////////////////////////////////////////////////////////////////////////
 
-    override fun onSuccess(forecast: ForecastModel) {
+    override fun onSuccess(forecast: CurrentForecastModel) {
         Picasso.get().load(forecast.iconPath).into(forecastImage)
         forecastText.text = forecast.toShortString()
     }

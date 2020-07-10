@@ -1,8 +1,8 @@
-package org.itstep.liannoi.weatherforecast.application.storage.forecasts.models
+package org.itstep.liannoi.weatherforecast.application.storage.forecasts.queries.current.models
 
 import com.google.gson.annotations.SerializedName
 
-data class ForecastModel(
+data class CurrentForecastModel(
     @SerializedName("coord") val coord: CoordinateModel,
     @SerializedName("weather") val weather: List<WeatherModel>,
     @SerializedName("base") val base: String,

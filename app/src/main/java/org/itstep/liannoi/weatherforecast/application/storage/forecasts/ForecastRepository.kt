@@ -6,7 +6,9 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.itstep.liannoi.weatherforecast.application.ApplicationDefaults
 import org.itstep.liannoi.weatherforecast.application.common.exceptions.DetailForecastException
-import org.itstep.liannoi.weatherforecast.application.storage.forecasts.queries.DetailQuery
+import org.itstep.liannoi.weatherforecast.application.common.exceptions.FiveDaysForecastException
+import org.itstep.liannoi.weatherforecast.application.storage.forecasts.queries.current.CurrentQuery
+import org.itstep.liannoi.weatherforecast.application.storage.forecasts.queries.fivedays.FiveDaysQuery
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -25,11 +27,21 @@ class ForecastRepository private constructor() {
         forecastService = retrofit.create(ForecastService::class.java)
     }
 
-    fun getCurrent(query: DetailQuery, handler: DetailQuery.Handler) {
+    fun getCurrent(query: CurrentQuery, handler: CurrentQuery.Handler) {
         forecastService.getCurrent(query.city, query.appId, query.units)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ handler.onSuccess(it) }, { handler.onError(DetailForecastException()) })
+            .follow()
+    }
+
+    fun getFiveDays(query: FiveDaysQuery, handler: FiveDaysQuery.Handler) {
+        forecastService.getFiveDays(query.city, query.appId, query.units)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { handler.onSuccess(it) },
+                { handler.onError(FiveDaysForecastException(it.message!!)) })
             .follow()
     }
 
