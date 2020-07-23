@@ -1,7 +1,10 @@
 package org.itstep.liannoi.weatherforecast.application.storage.forecasts.queries.fivedays.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class MainModel(
     @SerializedName("temp") val temp: Double,
     @SerializedName("feels_like") val feels_like: Double,
@@ -12,4 +15,4 @@ data class MainModel(
     @SerializedName("grnd_level") val grnd_level: Int,
     @SerializedName("humidity") val humidity: Int,
     @SerializedName("temp_kf") val temp_kf: Double
-)
+) : Parcelable

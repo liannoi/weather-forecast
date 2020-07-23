@@ -16,23 +16,33 @@ import org.itstep.liannoi.weatherforecast.application.storage.forecasts.queries.
 import org.itstep.liannoi.weatherforecast.infrastructure.CarefulCapitalize
 
 class ForecastsListCardAdapter constructor(
-    private val fiveDaysForecastModel: FiveDaysForecastModel,
+    private val fiveDaysForecastModel: FiveDaysForecastModel?,
     private val dateTimeFormatter: Formatter
 ) : RecyclerView.Adapter<ForecastsListCardAdapter.ViewHolder>() {
+
+    class ViewHolder(container: View) : RecyclerView.ViewHolder(container) {
+        val forecastIcon: ImageView = container.forecastIcon
+        val detailsText: TextView = container.detailsText
+    }
+
     override fun onCreateViewHolder(container: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(container.context)
+        val view: View = LayoutInflater.from(container.context)
             .inflate(R.layout.adapter_card_forecasts_list, container, false)
 
         return ViewHolder(view)
     }
 
     override fun getItemCount(): Int {
+        if (fiveDaysForecastModel == null) return 0
+
         return fiveDaysForecastModel.list.size
     }
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val model = fiveDaysForecastModel.list[position]
+        if (fiveDaysForecastModel == null) return
+
+        val model: ListModel = fiveDaysForecastModel.list[position]
         Picasso.get().load(model.iconPath).into(holder.forecastIcon)
         holder.detailsText.text = toTemperatureDateString(model)
     }
@@ -61,10 +71,5 @@ class ForecastsListCardAdapter constructor(
         val temperature = "${model.main.temp}°"
 
         return "$description$temperature ($date $time)"
-    }
-
-    class ViewHolder(container: View) : RecyclerView.ViewHolder(container) {
-        val forecastIcon: ImageView = container.forecastIcon
-        val detailsText: TextView = container.detailsText
     }
 }
