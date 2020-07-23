@@ -14,7 +14,8 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 class ForecastRepository private constructor() {
-    private val composite: CompositeDisposable = CompositeDisposable()
+
+    private val disposable: CompositeDisposable = CompositeDisposable()
     private val forecastService: ForecastService
 
     init {
@@ -50,15 +51,15 @@ class ForecastRepository private constructor() {
     ///////////////////////////////////////////////////////////////////////////
 
     fun stop() {
-        composite.clear()
+        disposable.clear()
     }
 
     fun destroy() {
-        composite.dispose()
+        disposable.dispose()
     }
 
     private fun Disposable.follow() {
-        composite.add(this)
+        disposable.add(this)
     }
 
     ///////////////////////////////////////////////////////////////////////////

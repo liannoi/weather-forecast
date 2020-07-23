@@ -12,14 +12,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".presentation.forecasts.list.ForecastsListActivity"></activity>
+
+        <service
+            android:name=".presentation.forecasts.services.PresentationForecastsService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".presentation.forecasts.list.ForecastsListActivity" />
+
         <activity android:name=".presentation.forecasts.detail.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+    </application>
 </manifest>
